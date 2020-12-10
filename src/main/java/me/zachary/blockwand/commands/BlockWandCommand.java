@@ -28,7 +28,7 @@ public class BlockWandCommand extends SpigotCommand {
     @Override
     public CommandResult onPlayerExecute(Player player, String[] strings) {
         if(strings[0].equalsIgnoreCase("give")){
-            player.getInventory().setItemInMainHand(plugin.getBlockWand("STONE"));
+            player.getInventory().setItemInMainHand(plugin.getBlockWand(plugin.getConfig().getString("Default wand.Block"), plugin.getConfig().getString("Default wand.Cost")));
         }
         return CommandResult.COMPLETED;
     }

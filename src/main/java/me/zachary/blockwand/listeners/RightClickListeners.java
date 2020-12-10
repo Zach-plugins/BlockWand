@@ -1,7 +1,9 @@
 package me.zachary.blockwand.listeners;
 
 import me.zachary.blockwand.Blockwand;
+import me.zachary.blockwand.ChatUtils;
 import me.zachary.blockwand.guis.BlockGUI;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,10 +16,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import xyz.theprogramsrc.supercoreapi.spigot.guis.GUIButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RightClickListeners implements Listener {
-    private Blockwand plugin;
+    private final Blockwand plugin;
 
     public RightClickListeners(Blockwand plugin) {
         this.plugin = plugin;
@@ -32,23 +38,33 @@ public class RightClickListeners implements Listener {
             block = event.getClickedBlock();
             return;
         }
+        String[] price_lore = event.getItem().getItemMeta().getLore().get(2).split(" ");
         String[] material_lore = event.getItem().getItemMeta().getLore().get(3).split(" ");
-        if(block != null && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getItem().isSimilar(plugin.getBlockWand(material_lore[2]))){
-            World world = Bukkit.getWorld(player.getWorld().getUID());
-            Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
-            Loc.getBlock().setType(Material.valueOf(material_lore[2]));
+        if(block != null && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getItem().isSimilar(plugin.getBlockWand(material_lore[2], price_lore[3]))){
+            if(Blockwand.econ.getBalance(player) >= Double.parseDouble(price_lore[3])){
+                World world = Bukkit.getWorld(player.getWorld().getUID());
+                Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
+                Loc.getBlock().setType(Material.valueOf(material_lore[2]));
+                Blockwand.econ.withdrawPlayer(player, Double.parseDouble(price_lore[3]));
+            }else
+                player.sendMessage(ChatUtils.color("&cYou don't have enough money. You need " + price_lore[3] + "$"));
         }else if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-            BlockGUI blockGUI = new BlockGUI(player);
+            BlockGUI blockGUI = new BlockGUI(player, plugin);
             blockGUI.isTitleCentered();
-            blockGUI.addButton(new GUIButton(0, new ItemStack(Material.STONE), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("STONE"))));
-            blockGUI.addButton(new GUIButton(1, new ItemStack(Material.DIRT), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("DIRT"))));
-            blockGUI.addButton(new GUIButton(2, new ItemStack(Material.COBBLESTONE), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("COBBLESTONE"))));
-            blockGUI.addButton(new GUIButton(3, new ItemStack(Material.OAK_LOG), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("OAK_LOG"))));
-            blockGUI.addButton(new GUIButton(4, new ItemStack(Material.SAND), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("SAND"))));
-            blockGUI.addButton(new GUIButton(5, new ItemStack(Material.GRAVEL), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("GRAVEL"))));
-            blockGUI.addButton(new GUIButton(6, new ItemStack(Material.GRASS_BLOCK), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("GRASS_BLOCK"))));
-            blockGUI.addButton(new GUIButton(7, new ItemStack(Material.DIAMOND_BLOCK), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("DIAMOND_BLOCK"))));
-            blockGUI.addButton(new GUIButton(8, new ItemStack(Material.OAK_PLANKS), clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand("OAK_PLANKS"))));
+            Integer i = 0;
+            for(String item : plugin.getConfig().getStringList("Block list gui")){
+                String[] split = item.split(",");
+                ItemStack itemblock = new ItemStack(Material.valueOf(split[0]));
+                ItemMeta itemMeta = itemblock.getItemMeta();
+                itemMeta.setDisplayName(ChatUtils.color("&6") + WordUtils.capitalize(split[0].toLowerCase().replace("_", " ")));
+                List<String> lore = new ArrayList<>();
+                lore.add(ChatUtils.color("&7Cost per block placed: &e" + split[1] + "$"));
+                itemMeta.setLore(lore);
+                itemblock.setItemMeta(itemMeta);
+
+                blockGUI.addButton(new GUIButton(i, itemblock, clickAction -> player.getInventory().setItemInMainHand(plugin.getBlockWand(split[0], split[1]))));
+                i++;
+            }
             blockGUI.open();
         }
         block = null;

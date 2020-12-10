@@ -1,0 +1,16 @@
+#Default wand when you give it with command
+Default wand:
+  Block: STONE
+  Cost: 1
+
+# Which block should be block selector gui (Maximum 54).
+Block list gui:
+  - STONE,1
+  - COBBLESTONE,2
+  - OAK_LOG,3
+  - DIRT,4
+  - GRASS_BLOCK,5
+  - OAK_PLANKS,6
+  - DIAMOND_BLOCK,7
+  - GRAVEL,8
+  - SAND,9
