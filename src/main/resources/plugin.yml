@@ -1,0 +1,6 @@
+name: Blockwand
+version: ${project.version}
+main: me.zachary.blockwand.Blockwand
+api-version: 1.13
+authors: [ Zach_FR ]
+description: You can place block with a wand
