@@ -2,16 +2,19 @@ package me.zachary.blockwand;
 
 import me.zachary.blockwand.commands.BlockWandCommand;
 import me.zachary.blockwand.listeners.RightClickListeners;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import xyz.theprogramsrc.supercoreapi.spigot.SpigotPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class Blockwand extends SpigotPlugin {
+    public static Economy econ = null;
 
     @Override
     public void onPluginLoad() {
@@ -22,11 +25,29 @@ public final class Blockwand extends SpigotPlugin {
     public void onPluginEnable() {
         new BlockWandCommand(this);
         new RightClickListeners(this);
+
+        if (!setupEconomy() ) {
+            System.out.println(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
     }
 
     @Override
     public void onPluginDisable() {
 
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 
     public ItemStack getBlockWand(String string){
