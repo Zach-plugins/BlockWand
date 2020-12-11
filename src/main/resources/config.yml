@@ -14,3 +14,6 @@ Block list gui:
   - DIAMOND_BLOCK,7
   - GRAVEL,8
   - SAND,9
+
+# Should block take in inventory
+Take block in inventory: false

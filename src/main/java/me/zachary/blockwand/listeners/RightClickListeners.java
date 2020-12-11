@@ -41,13 +41,24 @@ public class RightClickListeners implements Listener {
         String[] price_lore = event.getItem().getItemMeta().getLore().get(2).split(" ");
         String[] material_lore = event.getItem().getItemMeta().getLore().get(3).split(" ");
         if(block != null && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getItem().isSimilar(plugin.getBlockWand(material_lore[2], price_lore[3]))){
-            if(Blockwand.econ.getBalance(player) >= Double.parseDouble(price_lore[3])){
-                World world = Bukkit.getWorld(player.getWorld().getUID());
-                Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
-                Loc.getBlock().setType(Material.valueOf(material_lore[2]));
-                Blockwand.econ.withdrawPlayer(player, Double.parseDouble(price_lore[3]));
-            }else
-                player.sendMessage(ChatUtils.color("&cYou don't have enough money. You need " + price_lore[3] + "$"));
+            World world = Bukkit.getWorld(player.getWorld().getUID());
+            if(plugin.getConfig().getBoolean("Take block in inventory")){
+                if(player.getInventory().contains(Material.valueOf(material_lore[2]))){
+                    Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
+                    Loc.getBlock().setType(Material.valueOf(material_lore[2]));
+                    ItemStack itemRemove = new ItemStack(Material.valueOf(material_lore[2]));
+                    itemRemove.setAmount(1);
+                    player.getInventory().removeItem(itemRemove);
+                }else
+                    player.sendMessage(ChatUtils.color("&cYou don't have enough item in your inventory to do that. You need 1 " + material_lore[2].toLowerCase()));
+            }else{
+                if(Blockwand.econ.getBalance(player) >= Double.parseDouble(price_lore[3])){
+                    Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
+                    Loc.getBlock().setType(Material.valueOf(material_lore[2]));
+                    Blockwand.econ.withdrawPlayer(player, Double.parseDouble(price_lore[3]));
+                }else
+                    player.sendMessage(ChatUtils.color("&cYou don't have enough money. You need " + price_lore[3] + "$"));
+            }
         }else if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
             BlockGUI blockGUI = new BlockGUI(player, plugin);
             blockGUI.isTitleCentered();
@@ -58,7 +69,10 @@ public class RightClickListeners implements Listener {
                 ItemMeta itemMeta = itemblock.getItemMeta();
                 itemMeta.setDisplayName(ChatUtils.color("&6") + WordUtils.capitalize(split[0].toLowerCase().replace("_", " ")));
                 List<String> lore = new ArrayList<>();
-                lore.add(ChatUtils.color("&7Cost per block placed: &e" + split[1] + "$"));
+                if(plugin.getConfig().getBoolean("Take block in inventory"))
+                    lore.add(ChatUtils.color("&eTake block in your inventory."));
+                else
+                    lore.add(ChatUtils.color("&7Cost per block placed: &e" + split[1] + "$"));
                 itemMeta.setLore(lore);
                 itemblock.setItemMeta(itemMeta);
 

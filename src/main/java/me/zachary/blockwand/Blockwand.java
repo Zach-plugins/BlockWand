@@ -65,7 +65,10 @@ public final class Blockwand extends SpigotPlugin {
         List<String> lore = new ArrayList<>();
         lore.add(ChatUtils.color("&6Item Ability: Place a stone block &e&lRIGHT CLICK"));
         lore.add(ChatUtils.color("&7Place a " + string.toLowerCase().replace("_", " ") + " block."));
-        lore.add(ChatUtils.color("&7Cost per block:&6 " + price + " &7$"));
+        if(getConfig().getBoolean("Take block in inventory"))
+            lore.add(ChatUtils.color("&eTake block in your inventory."));
+        else
+            lore.add(ChatUtils.color("&7Cost per block:&6 " + price + " &7$"));
         lore.add(ChatUtils.color("&7Current block&6 " + string));
         return lore;
     }
