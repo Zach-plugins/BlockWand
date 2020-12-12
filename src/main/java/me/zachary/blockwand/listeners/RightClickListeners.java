@@ -50,7 +50,7 @@ public class RightClickListeners implements Listener {
                     itemRemove.setAmount(1);
                     player.getInventory().removeItem(itemRemove);
                 }else
-                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough block").replace("%Block%", material_lore[2].toLowerCase())));
+                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough block").replace("%Block%", material_lore[2].toLowerCase().replace("_", " "))));
             }else{
                 if(Blockwand.econ.getBalance(player) >= Double.parseDouble(price_lore[3])){
                     Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
