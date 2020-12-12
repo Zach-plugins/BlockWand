@@ -78,7 +78,7 @@ public final class Blockwand extends SpigotPlugin {
     public List<String> getLore(String string, String price){
         List<String> lore = new ArrayList<>();
         lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore item ability")));
-        lore.add(ChatUtils.color("&7Place a " + string.toLowerCase().replace("_", " ") + " block."));
+        lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore place block").replace("%Block%", string.toLowerCase().replace("_", " "))));
         if(getConfig().getBoolean("Take block in inventory"))
             lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore item inventory")));
         else

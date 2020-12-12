@@ -30,6 +30,7 @@ public class MessageFile extends SpigotModule {
         this.cfg.add("Block selector Item lore money", "&7Cost per block placed: &e%Money%$");
         this.cfg.add("Block wand name", "&aInfinite Block Wand");
         this.cfg.add("Block wand lore item ability", "&6Item Ability: Place a stone block &e&lRIGHT CLICK");
+        this.cfg.add("Block wand lore place block", "&7Place a %Block% block.");
         this.cfg.add("Block wand lore item inventory", "&eTake block in your inventory.");
         this.cfg.add("Block wand lore item cost block", "&7Cost per block:&6 %Price% &7$");
         this.cfg.add("Block wand lore current block", "&7Current block&6 %Item%");
