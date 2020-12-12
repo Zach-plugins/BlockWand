@@ -52,6 +52,11 @@ public final class Blockwand extends SpigotPlugin {
         return econ != null;
     }
 
+    @Override
+    public boolean isPaid() {
+        return false;
+    }
+
     public ItemStack getBlockWand(String string, String price){
         ItemStack blockwand = new ItemStack(Material.STICK);
         ItemMeta blockwandmeta = blockwand.getItemMeta();
