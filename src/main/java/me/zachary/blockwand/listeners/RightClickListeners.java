@@ -1,5 +1,6 @@
 package me.zachary.blockwand.listeners;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.zachary.blockwand.Blockwand;
 import me.zachary.blockwand.ChatUtils;
 import me.zachary.blockwand.guis.BlockGUI;
@@ -38,26 +39,27 @@ public class RightClickListeners implements Listener {
             block = event.getClickedBlock();
             return;
         }
-        String[] price_lore = event.getItem().getItemMeta().getLore().get(2).split(" ");
-        String[] material_lore = event.getItem().getItemMeta().getLore().get(3).split(" ");
-        if(block != null && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getItem().isSimilar(plugin.getBlockWand(material_lore[2], price_lore[3]))){
+        NBTItem nbtItem = new NBTItem(event.getItem());
+        String price = nbtItem.getString("Price");
+        String material = nbtItem.getString("Material");
+        if(block != null && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getItem().isSimilar(plugin.getBlockWand(material, price))){
             World world = Bukkit.getWorld(player.getWorld().getUID());
             if(plugin.getConfig().getBoolean("Take block in inventory")){
-                if(player.getInventory().contains(Material.valueOf(material_lore[2]))){
+                if(player.getInventory().contains(Material.valueOf(material))){
                     Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
-                    Loc.getBlock().setType(Material.valueOf(material_lore[2]));
-                    ItemStack itemRemove = new ItemStack(Material.valueOf(material_lore[2]));
+                    Loc.getBlock().setType(Material.valueOf(material));
+                    ItemStack itemRemove = new ItemStack(Material.valueOf(material));
                     itemRemove.setAmount(1);
                     player.getInventory().removeItem(itemRemove);
                 }else
-                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough block").replace("%Block%", material_lore[2].toLowerCase().replace("_", " "))));
+                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough block").replace("%Block%", material.toLowerCase().replace("_", " "))));
             }else{
-                if(Blockwand.econ.getBalance(player) >= Double.parseDouble(price_lore[3])){
+                if(Blockwand.econ.getBalance(player) >= Double.parseDouble(price)){
                     Location Loc = new Location(world, event.getClickedBlock().getX() + event.getBlockFace().getModX(), event.getClickedBlock().getY() + event.getBlockFace().getModY(), event.getClickedBlock().getZ() + event.getBlockFace().getModZ());
-                    Loc.getBlock().setType(Material.valueOf(material_lore[2]));
-                    Blockwand.econ.withdrawPlayer(player, Double.parseDouble(price_lore[3]));
+                    Loc.getBlock().setType(Material.valueOf(material));
+                    Blockwand.econ.withdrawPlayer(player, Double.parseDouble(price));
                 }else
-                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough money").replace("%Money%", price_lore[3])));
+                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough money").replace("%Money%", price)));
             }
         }else if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
             BlockGUI blockGUI = new BlockGUI(player, plugin);

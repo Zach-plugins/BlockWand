@@ -1,10 +1,10 @@
 package me.zachary.blockwand;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.zachary.blockwand.commands.BlockWandCommand;
 import me.zachary.blockwand.files.MessageFile;
 import me.zachary.blockwand.listeners.RightClickListeners;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -66,24 +66,27 @@ public final class Blockwand extends SpigotPlugin {
         return new MessageFile(this);
     }
 
-    public ItemStack getBlockWand(String string, String price){
+    public ItemStack getBlockWand(String material, String price){
         ItemStack blockwand = new ItemStack(Material.STICK);
         ItemMeta blockwandmeta = blockwand.getItemMeta();
         blockwandmeta.setDisplayName(ChatUtils.color(getMessageFile().getString("Block wand name")));
-        blockwandmeta.setLore(getLore(string, price));
+        blockwandmeta.setLore(getLore(material, price));
         blockwand.setItemMeta(blockwandmeta);
-        return blockwand;
+        NBTItem nbtblockwand = new NBTItem(blockwand);
+        nbtblockwand.setString("Material", material);
+        nbtblockwand.setString("Price", price);
+        return nbtblockwand.getItem();
     }
 
-    public List<String> getLore(String string, String price){
+    public List<String> getLore(String material, String price){
         List<String> lore = new ArrayList<>();
         lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore item ability")));
-        lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore place block").replace("%Block%", string.toLowerCase().replace("_", " "))));
+        lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore place block").replace("%Block%", material.toLowerCase().replace("_", " "))));
         if(getConfig().getBoolean("Take block in inventory"))
             lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore item inventory")));
         else
             lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore item cost block").replace("%Price%", price)));
-        lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore current block").replace("%Item%", string)));
+        lore.add(ChatUtils.color(getMessageFile().getString("Block wand lore current block").replace("%Item%", material)));
         return lore;
     }
 }
