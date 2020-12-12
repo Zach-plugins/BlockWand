@@ -28,11 +28,11 @@ public class BlockWandCommand extends SpigotCommand {
 
     @Override
     public CommandResult onPlayerExecute(Player player, String[] strings) {
-        if(!player.hasPermission("blockwand.give")){
-            player.sendMessage(ChatUtils.color("&4You don't have permission to execute this comamnd."));
-            return CommandResult.COMPLETED;
-        }
-        if(strings[0].equalsIgnoreCase("give")){
+         if(strings[0].equalsIgnoreCase("give")){
+             if(!player.hasPermission("blockwand.give")){
+                 player.sendMessage(ChatUtils.color("&4You don't have permission to execute this comamnd."));
+                 return CommandResult.COMPLETED;
+             }
             if(strings.length == 2){
                 Player target = Bukkit.getPlayer(strings[1]);
                 if(target != null){
@@ -41,7 +41,16 @@ public class BlockWandCommand extends SpigotCommand {
                     player.sendMessage(ChatUtils.color("Errors, this player is not found"));
             }else
                 player.getInventory().setItemInMainHand(plugin.getBlockWand(plugin.getConfig().getString("Default wand.Block"), plugin.getConfig().getString("Default wand.Cost")));
-        }
+         }
+         if(strings[0].equalsIgnoreCase("reload")){
+             if(!player.hasPermission("blockwand.reload")){
+                 player.sendMessage(ChatUtils.color("&4You don't have permission to execute this comamnd."));
+                 return CommandResult.COMPLETED;
+             }
+             plugin.saveDefaultConfig();
+             plugin.reloadConfig();
+             player.sendMessage(ChatUtils.color("&cYou have successful reload the config"));
+         }
         return CommandResult.COMPLETED;
     }
 
@@ -64,6 +73,7 @@ public class BlockWandCommand extends SpigotCommand {
         }
         if(args[0] != null){
             if(player.hasPermission("blockwand.give")) args1.add("give");
+            if(player.hasPermission("blockwand.reload")) args1.add("reload");
             return args1;
         }
         return args2;
