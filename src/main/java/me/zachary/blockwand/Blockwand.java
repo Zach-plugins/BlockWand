@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import xyz.theprogramsrc.supercoreapi.global.Metrics;
 import xyz.theprogramsrc.supercoreapi.spigot.SpigotPlugin;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public final class Blockwand extends SpigotPlugin {
     @Override
     public void onPluginEnable() {
         saveDefaultConfig();
+        int pluginId = 9628;
+        Metrics metrics = new Metrics(this, pluginId);
 
         new BlockWandCommand(this);
         new RightClickListeners(this);
