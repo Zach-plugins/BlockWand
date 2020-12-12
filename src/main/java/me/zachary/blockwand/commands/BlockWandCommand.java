@@ -30,7 +30,7 @@ public class BlockWandCommand extends SpigotCommand {
     public CommandResult onPlayerExecute(Player player, String[] strings) {
          if(strings[0].equalsIgnoreCase("give")){
              if(!player.hasPermission("blockwand.give")){
-                 player.sendMessage(ChatUtils.color("&4You don't have permission to execute this comamnd."));
+                 player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("No Permissions")));
                  return CommandResult.COMPLETED;
              }
             if(strings.length == 2){
@@ -38,18 +38,18 @@ public class BlockWandCommand extends SpigotCommand {
                 if(target != null){
                     target.getInventory().setItemInMainHand(plugin.getBlockWand(plugin.getConfig().getString("Default wand.Block"), plugin.getConfig().getString("Default wand.Cost")));
                 }else
-                    player.sendMessage(ChatUtils.color("Errors, this player is not found"));
+                    player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Player not found")));
             }else
                 player.getInventory().setItemInMainHand(plugin.getBlockWand(plugin.getConfig().getString("Default wand.Block"), plugin.getConfig().getString("Default wand.Cost")));
          }
          if(strings[0].equalsIgnoreCase("reload")){
              if(!player.hasPermission("blockwand.reload")){
-                 player.sendMessage(ChatUtils.color("&4You don't have permission to execute this comamnd."));
+                 player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("No Permissions")));
                  return CommandResult.COMPLETED;
              }
              plugin.saveDefaultConfig();
              plugin.reloadConfig();
-             player.sendMessage(ChatUtils.color("&cYou have successful reload the config"));
+             player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Successful reload")));
          }
         return CommandResult.COMPLETED;
     }
