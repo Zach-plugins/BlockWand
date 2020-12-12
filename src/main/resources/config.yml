@@ -4,6 +4,7 @@ Default wand:
   Cost: 1
 
 # Which block should be block selector gui (Maximum 54).
+# Format: <BLOCKNAME>,<PRICE>
 Block list gui:
   - STONE,1
   - COBBLESTONE,2
