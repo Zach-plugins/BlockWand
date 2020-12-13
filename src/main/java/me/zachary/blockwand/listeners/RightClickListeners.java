@@ -61,7 +61,7 @@ public class RightClickListeners implements Listener {
                 }else
                     player.sendMessage(ChatUtils.color(plugin.getMessageFile().getString("Not enough money").replace("%Money%", price)));
             }
-        }else if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+        }else if((event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) && event.getItem().isSimilar(plugin.getBlockWand(material, price))){
             BlockGUI blockGUI = new BlockGUI(player, plugin);
             blockGUI.isTitleCentered();
             Integer i = 0;
